@@ -43,7 +43,13 @@ public class SecurityConfig {
 
         http.csrf(cs -> cs.disable())
                 .authorizeHttpRequests(auth -> auth
+                        // ⚠️ Swagger paths MUST be first!
+                        .requestMatchers("/swagger-ui/**", "/swagger-ui.html", "/swagger-ui/index.html").permitAll()
+                        .requestMatchers("/api-docs/**", "/v3/api-docs/**", "/swagger-resources/**", "/webjars/**").permitAll()
+                        // API endpoints
                         .requestMatchers("/api/auth/**").permitAll()
+                        .requestMatchers("/api/rides/**").permitAll()
+                        .requestMatchers("/api/analytics/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))
                 .authenticationProvider(provider)

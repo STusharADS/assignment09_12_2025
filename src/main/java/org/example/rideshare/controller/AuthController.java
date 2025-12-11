@@ -14,8 +14,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.tags.Tag;
+
 @RestController
 @RequestMapping("/api/auth")
+@Tag(name = "Authentication APIs", description = "User registration and login endpoints")
 public class AuthController {
 
     private final AuthenticationManager manager;
@@ -29,11 +33,15 @@ public class AuthController {
     }
 
     @PostMapping("/register")
+    @Operation(summary = "Register a new user",
+               description = "Register a new user or driver. Returns the created user with ID.")
     public User register(@RequestBody User user) {
         return service.register(user.getUsername(), user.getPassword(), user.getRole());
     }
 
     @PostMapping("/login")
+    @Operation(summary = "Login user",
+               description = "Authenticate user and receive JWT token. Returns token, role, and username.")
     public Map<String, String> login(@RequestBody AuthRequest req) {
         manager.authenticate(new UsernamePasswordAuthenticationToken(req.getUsername(), req.getPassword()));
         UserDetails userDetails = service.loadUserByUsername(req.getUsername());
